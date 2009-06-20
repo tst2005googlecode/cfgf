@@ -1,0 +1,86 @@
+
+
+
+# Measures the lenght of the list with trailing empty elements removed.
+
+m4_define(`cg_len', `m4_ifelse(m4_eval(`$# <= 1')`$1', 1`', `0', `m4_dnl
+m4_pushdef(`sublen', cg_len(m4_shift($@)))m4_dnl
+cg_if(sublen || m4_len(`$1'), `m4_incr(sublen)', `0')m4_dnl
+m4_popdef(`sublen')')')
+
+
+# Extract sublists
+
+m4_define(`cg_tail', `cg_if(`$1 > 0',
+	`cg_tail(m4_decr(`$1'), m4_shift(m4_shift($@)))',
+	`m4_shift($@)')')
+
+m4_define(`cg_head', `cg_if(`($1 > 0) && ($# > 1)',
+	``$2'cg_if(`($1 > 1) && ($# > 2)',
+	`,cg_head(m4_decr(`$1'), cg_tail(2,$@))')')')
+
+m4_define(`cg_index', `cg_head(1, cg_tail($1, m4_shift($@)))')
+
+m4_define(`_cg_ofslookup', `m4_ifelse(
+	m4_eval(`$# < 3'), 1, `-1',
+	m4_eval(`$# == 3')`$3', 1`', -1,
+	`$2', `$3', `$1',
+	`_cg_ofslookup(m4_incr(`$1'), `$2', cg_tail(3,$@))')')
+
+m4_define(`cg_lookup', `_cg_ofslookup(0, $@)')
+
+
+# This expands to the list of arguments with each element quoted and empty
+# trailing ones removed.
+
+m4_define(`cg_list', `cg_if(cg_len($@) > 0,
+	``$1'cg_if(cg_len($@) > 1, `,cg_list(m4_shift($@))')')')
+
+
+# Reverse a list
+
+m4_define(`cg_reverse', `cg_if(cg_len($@) > 0,
+	`cg_if(cg_len($@) > 1, `cg_reverse(m4_shift($@)),')`$1'')')
+
+
+# List-driven loops
+
+m4_define(`_cg_sub',
+`m4_pushdef(`$1', cg_quote(m4_incr(`$2'), `$4'))`'$3`'m4_popdef(`$1')')
+
+m4_define(`cg_foreach', `cg_if(cg_len($@) > 3,
+	`_cg_sub($@)`'cg_foreach(`$1', `$2', `$3', cg_tail(4, $@))')')
+
+m4_define(`cg_map', `cg_if(cg_len($@) > 3, `_cg_sub($@)'m4_dnl
+`cg_if(cg_len($@) > 4, `,cg_map(cg_head(3, $@), cg_tail(4, $@))')')')
+
+m4_define(`cg_grep_', `cg_if(cg_len($@) > 4, `m4_dnl
+m4_ifelse(_cg_sub(`$1', `$2', `$3', `$5'), `$4', `,`$5'')m4_dnl
+cg_grep_(cg_head(4, $@), cg_tail(5, $@))')')
+
+m4_define(`cg_grep', `m4_shift(cg_grep_($@))')
+
+
+# Associative lists
+
+m4_define(`cg_field', `cg_map(`l', 0, `cg_tail(1, l)',
+	cg_grep(`n', 0, `cg_head(1, n)', `$1', m4_shift($@)))')
+
+m4_define(`cg_setfield', `m4_ifelse(
+	`$#', `2', ```$1',`$2''',
+	`$1', cg_index(0, $3), ```$1',`$2'', cg_tail(3, $@)',
+	``$3', cg_setfield(`$1', `$2', cg_tail(3, $@))')')
+
+m4_define(`cg_setfields', `m4_ifelse(`$#', `1', `$1', `$#$2', `2', `$1',
+	`cg_setfields(cg_quote(2, cg_setfield($2, $1)), cg_tail(2, $@))')')
+
+# Split and join
+
+m4_changequote([,])
+m4_define([cg_split], [m4_patsubst(``$2'', `$1',
+m4_changequote({,}){',`}m4_changequote(`,'))])
+m4_changequote(`,')
+
+m4_define(`cg_join', ``$2'm4_ifelse(m4_eval(`$# > 2'), `0', `',
+`$1`'cg_join(`$1', cg_tail(2, $@))')')
+

@@ -1,0 +1,24 @@
+# This `if' macro works by evaluating an arithmetic expression rather than
+# comparing two strings (as `ifelse' does).
+m4_define(`cg_if', `m4_ifelse(m4_eval(`$1'), 1, `$2', `$3')')
+
+# This wrapper around m4_esyscmd runs a command whose output is transformed to
+# retain only matches of the given regexp and m4ified
+m4_define(`cg_resyscmd',
+	`m4_esyscmd(`$1 | egrep "$2" | sed -r "s/$2/\1/" | cg_m4ify')')
+
+# Insert newline
+m4_define(`cg_inl', `
+')
+
+# cg_quote: quote the trailing arguments the given number of times:
+#	* 0 means no quoting is done
+#	* 1 means that each argument is quoted (as expanded to by $@)
+#	* more means adding quotes around the whole thing
+m4_define(`cg_quote_once', ``$@'')
+m4_define(`cg_quote_dont', `$*')
+m4_define(`cg_quote', `m4_ifelse(
+	`$1', `0', `cg_quote_dont(m4_shift($@))',
+	`$1', `1', `m4_shift($@)',
+	`cg_quote(m4_decr($1), cg_quote_once(m4_shift($@)))')')
+

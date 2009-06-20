@@ -1,0 +1,108 @@
+.TH cfgf 8 "2008-09-13" "cfgf documentation"
+.SH NAME
+
+cfgf \- update command for the configuration file generation framework
+
+.SH SYNOPSIS
+
+.B cfgf
+.RI [ options ]
+.RB [ --
+.IR "make options" "] [" targets ]
+
+.SH DESCRIPTION
+
+.B cfgf
+is used for updating the files handled
+by the configuration file generation framework.
+The framework is based on
+.BR make "(1); the " cfgf
+command is a front-end which sets up an appropriate
+environement and invokes the cfgf makefile.
+
+This manual page describes the
+.B cfgf
+command; for background information about
+the configuration file generation framework,
+please see
+.BR cfgf (7).
+
+.SH OPTIONS
+
+The first arguments can consist of the options described below.
+When an arguement which doesn't start with
+.RB \*(lq - \*(rq
+is encountered, or just after the special argument
+.RB \*(lq -- \*(rq
+has been encountered,
+.B cfgf
+stops parsing its own options.
+The trailing arguments are passed to
+.BR make .
+
+
+.SH TARGETS
+
+.TP
+.B update
+
+
+.SH ENVIRONMENT
+
+.B CFGF_CONFIG
+points to a configuration file
+to be read by
+.BR update-cfgf ,
+which can define values
+for the environment variables described here.
+This file
+has the syntax of a shell-script fragment,
+and is directly included into
+.B update-cfgf
+itself,
+which is a POSIX shell script.
+As a consequence
+the values in the configuration file
+override those from the environment.
+Setting
+.RB $ CFGF_CONFIG
+in the configuration file
+has no effect.
+By default,
+.B /etc/cfgf/cfgf.conf
+is used.
+
+.B CFGF_WD
+gives the working directory for the cfgf scripts,
+where the built configuration files are stored.
+Ametaphorically,
+the directory
+.B make
+runs in.
+This defaults to
+.BR /var/lib/cfgf .
+
+.B CFGF_VPATH
+contains a space-separated list of directories
+which are used as a search list
+for source files.
+.RB $ CFGF_WD
+is implicitely
+the first element of this list.
+On systems where
+.B make
+does not support the VPATH feature,
+the contents of these directories
+is symlinked into
+.RB $ CFGF_WD " before " make
+is invoked.
+The default value is
+.BR /etc/cfgf:/usr/lib/cfgf:/usr/share/cfgf .
+
+.B CFGF_MAKE
+can point to an alternative command
+to be used instead of
+.BR make .
+
+
+.SH EXIT STATUS

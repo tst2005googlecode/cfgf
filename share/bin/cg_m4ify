@@ -1,0 +1,29 @@
+#!/usr/bin/awk -f
+
+BEGIN {
+	if(ARGC > 1) {
+		depth = ARGV[1];
+		ARGV[1] = "";
+	} else
+		depth = 1;
+}
+
+/^[^,`']+$/ {
+	if(elt) { printf ",\n"; }
+
+	elt = $0;
+	
+	if(depth >= 2) {
+		elt = "";
+		for(i = 1; i <= NF; i++) {
+			if(elt) { elt = elt ","; }
+			elt = elt "`" $i "'";
+		}
+	}
+
+	if(depth >= 1)
+		elt = "`" elt "'";
+
+	if(elt) { printf "%s", elt; }
+}
+

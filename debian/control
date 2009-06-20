@@ -1,0 +1,13 @@
+Source: cfgf
+Section: admin
+Priority: optional
+Maintainer: Jeremie Koenig <jk@jk.fr.eu.org>
+Build-Depends: debhelper (>= 4.0.0), cdbs
+Standards-Version: 3.6.1
+
+Package: cfgf
+Architecture: all
+Depends: make, m4, ${perl:Depends}
+Description: configuration file generation framework
+ cfgf is a build system for configuration files base on make and m4.
+

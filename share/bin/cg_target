@@ -1,0 +1,25 @@
+#!/bin/sh
+# A simple script to determine what target a given prerequisite should
+# ultimately build.
+
+rulexists () {
+	# directory rules are created in a special way
+	[ "$1" = "d" ] && return 0
+
+	# scan for everything else
+	cg_find -f rules.d -name \*.mk \
+	| xargs egrep -q '^%(\.new)?: %.'"$1"'($|[[:space:]])' /dev/null
+}
+
+next="$1"
+target=
+ext=
+while [ "$next" != "$target" ] && ([ -z "$ext" ] || rulexists "$ext"); do
+	target="$next"
+	ext="$(echo $target  | sed -r 's:.*\.([^/.]*)$:\1:')"
+	next="$(echo $target | sed -r 's:(.*)\.[^/.]*$:\1:')"
+done
+
+[ "$target" ] || exit 1
+echo "$target"
+

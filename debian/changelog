@@ -1,0 +1,32 @@
+cfgf (0.1~14) unstable; urgency=low
+
+  * improve configuration files installation reliability :
+    - create non-existing parent directories;
+    - don't fail when a backup already exists, rename it instead;
+    - use an absolute path to INEXISTENT; also, symlink it to /dev/null;
+    - rebuild etc/stamp (hence install-list) on Makefile update;
+    - make install-stamp/etc/foo depend on etc/foo.
+
+ -- Jeremie Koenig <jk@idsbox.eu>  Mon, 08 Jun 2009 09:47:38 +0200
+
+cfgf (0.1~11) unstable; urgency=low
+
+  * activate init script
+  * preserve permissions and links when copying .new files
+    (FIXME: compare links ?)
+  * efficient and reliable macro to create %.d rules, rather than trying to
+    work them out autmatically
+  * fix stuff
+
+ -- Jeremie Koenig <jk@jk.fr.eu.org>  Wed, 08 Apr 2009 08:44:51 +0200
+
+cfgf (0.1~4) unstable; urgency=low
+
+  * Fix cg_target and "%: %.d" and stuff
+  * Add share/etc (empty dir) so that "update" works even without
+    any configuration file templates.
+  * Add the M4FLAGS make variable (useful for debugging)
+  * Add the cg_inl (insert newline) macros
+  * Remove some old stuff
+
+ -- Jeremie Koenig <jk@jk.fr.eu.org>  Thu, 18 Sep 2008 21:56:37 +0200
