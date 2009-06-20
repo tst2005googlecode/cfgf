@@ -1,0 +1,94 @@
+#!/bin/sh
+# This is a simple helper script for invoking the main makefile.
+# Stuff done here cannot be done from within makefiles, with some or all
+# versions of make. Namely:
+#	- decide what directories we are using by reading a config file;
+#	- extend the PATH with our helper script directories;
+#	- create the Makefile from its parts;
+#	- either set VPATH or flatten the multiple directories into a single
+#	  one.
+
+
+set -e
+
+
+[ "$CFGF_CONFIG" ]	|| CFGF_CONFIG="/etc/cfgf/cfgf.conf"
+[ "$CFGF_WD" ]		|| CFGF_WD="/var/lib/cfgf"
+[ "$CFGF_VPATH" ]	|| CFGF_VPATH="/etc/cfgf /usr/share/cfgf"
+[ "$CFGF_MAKE" ]	|| CFGF_MAKE="/usr/bin/make"
+
+
+setenv () {
+	${setenv_action:-eval} "$1=\"$2\""
+	${setenv_action:-eval} export "$1"
+}
+
+usage () { cat << .
+Usage:
+  $0 [options] [--] [$CFGF_MAKE options] [targets]
+
+Options:
+  -h		show this usage summary
+
+Targets:
+  build		the default target, build all configuration files
+  etc/*		build a given configuration file
+  install	create symbolic links to generated files in /etc
+  /etc/*	create the given symlink
+.
+}
+
+
+unset setenv_action
+while [ $# -gt 0 ]; do
+	case "$1" in
+	-h)
+		usage
+		exit;;
+	-f)
+		CFGF_CONFIG="$2"
+		shift 2;;
+	-e)
+		setenv_action="echo"
+		shift;;
+	--)
+		shift
+		break;;
+	*)
+		break;;
+	esac
+done
+
+
+# Read the configuration file
+if [ -r "$CFGF_CONFIG" ]; then . $CFGF_CONFIG; fi
+
+# Export some configuration variables
+for v in CFGF_WD CFGF_VPATH CFGF_MAKE; do
+	eval setenv $v "\"\$$v\""
+done
+
+# Prefix $PATH with our helper script directories
+unset path_prefix
+for d in $CFGF_WD $CFGF_VPATH; do
+	path_prefix="${path_prefix}${d}/bin:"
+done
+setenv PATH "${path_prefix}${PATH}"
+
+# The search path for Perl modules
+perllib="$CFGF_WD/perl"
+for d in $CFGF_VPATH; do perllib="$perllib:$d/perl"; done
+setenv PERLLIB "$perllib"
+
+# Some stuff depends on a standard ordering
+setenv LC_COLLATE C
+
+# Stop now if -e was given
+if [ "$setenv_action" ]; then exit 0; fi
+
+# Create the directory sturucture and the Makefile, then invoke make
+cd "$CFGF_WD"
+cg_find -type d | xargs mkdir -p
+[ -e Makefile ] || cg_find -f rules.d/ -name \*.mk | xargs cat /dev/null > Makefile
+$CFGF_MAKE VPATH="$CFGF_VPATH" "$@"
+

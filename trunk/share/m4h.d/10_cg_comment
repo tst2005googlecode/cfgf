@@ -1,0 +1,4 @@
+m4_define(`cg_comment',
+`# Beware! This file has been automatically generated, your changes will be'
+`# overwritten.'
+)

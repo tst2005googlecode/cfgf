@@ -1,0 +1,68 @@
+
+# cg_list
+one,two,three
+first,second,trap,,fifth
+
+# cg_len
+3
+5
+8
+11
+0
+0
+0
+
+# cg_tail
+one,two,three
+three
+trap,,fifth
+
+
+# cg_head
+
+one
+one,two
+one,two,three
+one,two,three
+trap,,fifth,one
+
+# cg_index
+trap
+
+fifth
+
+# cg_lookup
+0
+1
+2
+-1
+2
+3
+-1
+4
+
+# cg_reverse
+three,two,one
+fifth,,trap,second,first
+
+# cg_foreach
+debian rules
+
+# cg_map
+one,two,three
+the first,the second,the trap,the ,the fifth
+
+# cg_grep
+one,two
+first,second,fifth
+
+# cg_split
+we,trap`'ped,this,string
+
+# cg_join
+and this list is trap`'ped as well
+
+# cg_field
+two,three
+second,trap,,fifth
+

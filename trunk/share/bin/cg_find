@@ -1,0 +1,39 @@
+#!/bin/sh
+# cg_find -- `find' files within cfgf's "union" of directories
+
+set -e
+
+help () {
+	echo "Usage: $0 [-slfh] [--] [<find options>]";
+}
+
+output_mode=short
+while [ $# -gt 0 ]; do
+	case "$1" in
+		-s) output_mode=short;;
+		-l) output_mode=long;;
+		-f) output_mode=full;;
+		-h) help; exit 0;;
+		--) shift; break;;
+		*) break;;
+	esac
+	shift
+done
+
+
+for d in . $CFGF_VPATH; do
+	(cd $d && find "$@" 2>/dev/null) | sed -r s:'(\./)?(.*)':"\2 $d":
+done \
+| grep -v '\.svn' \
+| sort \
+| while read f d; do
+	if [ "$f" != "$prev" ]; then
+		case "$output_mode" in
+			short)	echo "$f";;
+			long)	echo "$f $d";;
+			full)	echo "$d/$f";;
+		esac
+	fi
+	prev="$f"
+done
+

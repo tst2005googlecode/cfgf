@@ -1,0 +1,19 @@
+#!/bin/sh
+
+set -e
+
+case "$1" in
+start|restart|reload|force-reload)
+	echo -n "Generating cfgf configuration files... "
+	cfgf update
+	echo "done."
+	;;
+
+stop)
+	;;
+
+*)
+	echo >&2 "Usage: $0 (start|stop|restart|reload|force-reload)"
+	exit 1
+esac
+

@@ -1,0 +1,24 @@
+#!/usr/bin/perl -w
+#
+#
+# Note: Net::LDAP in libnet-ldap-perl for debian
+
+require "base.ph";
+
+
+# Parse command line arguments
+while(($_ = shift) && /^-/) {
+	s/^-//;
+	$opts{$_} = shift;
+}
+
+# Search
+my @result;
+foreach $e (ldap_search(%opts)) {
+	my @l = map([$_, @{$$e{$_}}], keys(%$e));
+	push @result, \@l;
+}
+
+# Print
+print m4ify_list(@result);
+
