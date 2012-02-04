@@ -86,9 +86,16 @@ setenv LC_COLLATE C
 # Stop now if -e was given
 if [ "$setenv_action" ]; then exit 0; fi
 
-# Create the directory sturucture and the Makefile, then invoke make
+# Create the directory sturucture
 cd "$CFGF_WD"
 cg_find -type d | xargs mkdir -p
-[ -e Makefile ] || cg_find -f rules.d/ -name \*.mk | xargs cat /dev/null > Makefile
+
+# Assemble a bootstrap Makefile, if necessary
+if ! [ -e Makefile ]; then
+	cg_find -f rules.d/ -name \*.mk | xargs cat /dev/null > Makefile
+	touch -t 198406042010 Makefile # make sure it will be immediately regenerated
+fi
+
+# Finally, invoke make
 $CFGF_MAKE VPATH="$CFGF_VPATH" "$@"
 

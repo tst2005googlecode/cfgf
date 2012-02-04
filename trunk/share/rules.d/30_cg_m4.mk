@@ -9,9 +9,6 @@ M4FLAGS =
 m4state = m4f
 m4command = $(M4) -R $(m4state)
 
-# the files in m4h.d are concatenated into m4h
-$(eval $(call dot_d_rule,m4h))
-
 # create the M4 frozen state file
 $(m4state): m4h
 	$(M4) -F $@.n $(M4FLAGS) $<
