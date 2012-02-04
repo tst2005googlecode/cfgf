@@ -1,0 +1,7 @@
+#!/bin/sh
+
+cg_find -name \*.d | while read f; do
+	STEM=$(cg_target "$f")
+	printf '$(eval $(call dot_d_rule,%s))\n' "$STEM"
+done
+
