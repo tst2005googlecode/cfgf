@@ -28,7 +28,7 @@ tmp:
 	mkdir -p $@
 
 tmp/%: tmp non-stamp
-	CFGF_CONFIG=cfgf.conf.tmp ./cfgf $*
+	CFGF_CONFIG=./cfgf.conf.tmp ./cfgf $*
 
 test: tmp/test
 
