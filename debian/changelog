@@ -1,3 +1,9 @@
+cfgf (0.1~16) UNRELEASED; urgency=low
+
+  * Quelch warning about the redundant rule to process rules.d.
+
+ -- Jérémie Koenig <jk@jk.fr.eu.org>  Sat, 19 Oct 2013 03:51:09 -0400
+
 cfgf (0.1~15) unstable; urgency=low
 
   * generate %.d rules automatically
