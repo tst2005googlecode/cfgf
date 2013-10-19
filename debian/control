@@ -1,7 +1,7 @@
 Source: cfgf
 Section: admin
 Priority: optional
-Maintainer: Jeremie Koenig <jk@jk.fr.eu.org>
+Maintainer: Jérémie Koenig <jk@jk.fr.eu.org>
 Build-Depends: debhelper (>= 4.0.0), cdbs
 Standards-Version: 3.6.1
 
