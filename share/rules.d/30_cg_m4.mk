@@ -21,5 +21,5 @@ $(m4state): m4h
 
 # This invokes m4 in a cfgf context for the user to test stuff.
 runm4: $(m4state)
-	$(m4command) -
+	$(m4command) $(M4FLAGS) -
 
