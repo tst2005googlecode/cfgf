@@ -1,0 +1,5 @@
+A few things need to be done before cfgf can be uploaded to Debian:
+
+  * go over the manual page cfgf.8, and create cfgf.7
+  * convert the source to use debhelper 7
+
