@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# Signal to 30_cg_Makefile.mk that the bootstrap process is over.
+echo "CG_DOTD_RULES_BOOTSTRAPPED = yes"
+
 cg_find -name \*.d | while read f; do
 	STEM=$(cg_target "$f")
 	printf '$(eval $(call dot_d_rule,%s))\n' "$STEM"
