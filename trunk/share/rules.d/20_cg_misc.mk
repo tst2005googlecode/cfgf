@@ -35,5 +35,11 @@ gen_stem = $(shell echo $< | sed 's/\.gen$$//')
 %.new: %.gen ALWAYS_DO
 	$< >$@
 
+# Run a shell in the same exact environment as make rules. This is useful for
+# testing rules because then helper scripts are in the $PATH. Also, some of
+# those crucially depend on the rest of the environment being set up, and so
+# they are difficult to invoke properly from outside the Makefile.
+
 runsh:
 	/bin/sh
+
